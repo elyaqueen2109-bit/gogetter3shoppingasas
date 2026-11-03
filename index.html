@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>As...as / Not as...as — Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    --card-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #4b5563;
+    --primary: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --accent: #f43f5e;
+    --success: #10b981;
+    --error: #ef4444;
+    --border-radius: 20px;
+    --shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--text-main);
+  }
+
+  .app-container {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 650px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 30px 30px 15px;
+    text-align: center;
+  }
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b, #8b5cf6, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .progress-container {
+    height: 6px;
+    background: #f3f4f6;
+    width: 100%;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    width: 0%;
+    transition: width 0.4s ease;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .content {
+    padding: 20px 30px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-wrapper {
+    width: 100%;
+    max-width: 450px;
+    aspect-ratio: 4/3;
+    background: #f9fafb;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    perspective: 1000px;
+    margin-bottom: 25px;
+    transition: transform 0.2s;
+  }
+  
+  .flip-inner {
+    width: 100%; height: 100%;
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+  .image-wrapper.flipped .flip-inner { transform: rotateY(180deg); }
+
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flip-front {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .flip-back {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white;
+    transform: rotateY(180deg);
+    padding: 30px;
+    text-align: center;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .task-area {
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+  }
+
+  .source-text {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .prompt-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+    background: linear-gradient(transparent 60%, #fef08a 60%);
+    display: inline-block;
+    padding: 0 5px;
+    border-radius: 4px;
+  }
+  
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-family: 'Fredoka', sans-serif;
+    background-color: #fef08a; 
+    border: 3px dashed #eab308;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.2s;
+    color: #854d0e;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 2px 2px 0 rgba(234, 179, 8, 0.3);
+  }
+  
+  input[type="text"]:focus {
+    background-color: #fef9c3;
+    border-color: #ca8a04;
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+  }
+  
+  input[type="text"]:disabled {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    border-color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Record button */
+  .btn-record {
+    background: #3b82f6;
+    color: white;
+    padding: 16px;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    border-bottom: 4px solid #1d4ed8;
+    width: 100%;
+  }
+  .btn-record:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+  }
+  .btn-record:active {
+    transform: translateY(2px);
+    border-bottom-width: 0;
+  }
+  .btn-record.recording {
+    background: #ef4444;
+    border-bottom-color: #b91c1c;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  }
+
+  /* Показать ответ */
+  .btn-show-answer {
+    background: white;
+    color: var(--text-main);
+    padding: 12px;
+    font-size: 15px;
+    border: 2px solid #e5e7eb;
+    width: 100%;
+  }
+  .btn-show-answer:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #f5f3ff;
+  }
+
+  .audio-container {
+    width: 100%;
+    margin-top: 5px;
+  }
+  audio {
+    width: 100%;
+    height: 40px;
+    border-radius: 20px;
+    outline: none;
+  }
+
+  .nav-panel {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 30px;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .btn-nav {
+    background: white;
+    color: var(--text-main);
+    border: 2px solid #e5e7eb;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-nav:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #f5f3ff;
+  }
+  .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+  
+  .btn-nav.next {
+    background: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    border-bottom: 4px solid #1d4ed8;
+  }
+  .btn-nav.next:hover:not(:disabled) {
+    background: #2563eb;
+    transform: translateY(-2px);
+  }
+
+  .hint-text {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-top: 15px;
+    display: block;
+    min-height: 20px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <h1>Comparison</h1>
+    <div class="subtitle">as...as / not as...as</div>
+  </header>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="content">
+    <div class="image-wrapper" id="flipCard" onclick="flipAndSpeak()">
+      <div class="flip-inner">
+        <div class="flip-front" id="taskImage"></div>
+        <div class="flip-back" id="flipBackText">The full sentence will appear here.</div>
+      </div>
+    </div>
+
+    <div class="task-area">
+      <div class="source-text" id="sourceText">Loading...</div>
+      <div class="prompt-text" id="promptText">...</div>
+      
+      <div class="input-wrapper">
+        <!-- Текстовое поле -->
+        <input type="text" id="answerInput" placeholder="Type or say your answer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        
+        <!-- Кнопка записи микрофоном -->
+        <button class="btn btn-record" id="recordBtn" onclick="startSpeechRecognition()">🎤 Say your answer</button>
+        
+        <!-- Кнопка показать ответ -->
+        <button class="btn btn-show-answer" onclick="showAnswer()">👁 Show correct answer</button>
+        
+        <!-- Плеер для прослушивания (если нужно) -->
+        <div class="audio-container" id="audioPlayback"></div>
+      </div>
+      
+      <span class="hint-text" id="hintText">Type your answer or click the mic to speak.</span>
+    </div>
+  </div>
+
+  <div class="nav-panel">
+    <button class="btn-nav" id="prevBtn" onclick="prevTask()">← Back</button>
+    <button class="btn-nav next" id="nextBtn" onclick="nextTask()">Next →</button>
+  </div>
+</div>
+
+<script>
+// ============ SOUND & VOICE ============
+let audioCtx = null;
+let soundEnabled = true;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playClickSound() {
+  if (!soundEnabled) return; initAudio();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine'; osc.frequency.value = 600;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.05, now + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(now); osc.stop(now + 0.06);
+}
+
+let maleVoice = null;
+function loadVoices() {
+  if (!('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices();
+  maleVoice = voices.find(v => v.lang === 'en-GB' && (v.name.includes('Male') || v.name.includes('Daniel') || v.name.includes('George'))) 
+           || voices.find(v => v.lang === 'en-GB' && v.name.includes('Google UK English Male'))
+           || voices.find(v => v.lang === 'en-GB') 
+           || voices[0];
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+function speakPhrase(text) {
+  if (!soundEnabled || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB';
+  u.rate = 0.9;
+  u.pitch = 0.8;
+  if (maleVoice) u.voice = maleVoice;
+  window.speechSynthesis.speak(u);
+}
+
+// ============ SPEECH RECOGNITION (ГОЛОСОВОЙ ВВОД) ============
+let recognition = null;
+let isRecording = false;
+
+function initRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Your browser does not support speech recognition. Please use Google Chrome.");
+    return null;
+  }
+
+  const rec = new SpeechRecognition();
+  rec.lang = 'en-GB'; // Британский английский
+  rec.interimResults = false; // Ждем финальный результат
+  rec.maxAlternatives = 1;
+
+  rec.onstart = () => {
+    isRecording = true;
+    const btn = document.getElementById('recordBtn');
+    btn.textContent = '🔴 Listening... (Speak now)';
+    btn.classList.add('recording');
+    document.getElementById('answerInput').value = ''; // Очищаем поле
+    playClickSound();
+  };
+
+  rec.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    // Вставляем распознанный текст в поле ввода
+    document.getElementById('answerInput').value = transcript;
+  };
+
+  rec.onerror = (event) => {
+    console.error("Speech recognition error", event.error);
+    if (event.error === 'not-allowed') {
+      alert("Microphone access denied. Please allow it in your browser settings.");
+    }
+  };
+
+  rec.onend = () => {
+    isRecording = false;
+    const btn = document.getElementById('recordBtn');
+    btn.textContent = '🎤 Say your answer';
+    btn.classList.remove('recording');
+  };
+
+  return rec;
+}
+
+function startSpeechRecognition() {
+  if (!recognition) {
+    recognition = initRecognition();
+  }
+  if (recognition) {
+    try {
+      recognition.start();
+    } catch(e) {
+      // Если уже запущено, останавливаем
+      recognition.stop();
+    }
+  }
+}
+
+// ============ DATA ============
+const IMG_W = 1254; 
+const IMG_H = 1254;
+
+const shopsData = [
+  { id: 'sports shop 1', x: 2, y: 5, w: 627, h: 410 },
+  { id: 'trainers 1', x: 631, y: 5, w: 618, h: 410 },
+  { id: 'greengrocer 1', x: 4, y: 417, w: 627, h: 397 },
+  { id: 'shoes 1', x: 633, y: 423, w: 610, h: 391 },
+  { id: 'bookshop 1', x: 6, y: 823, w: 618, h: 427 },
+  { id: 't-shirts 1', x: 640, y: 825, w: 610, h: 427 }
+];
+
+const tasks = [
+  {
+    imageId: 'sports shop 1',
+    source: "The sports shop is big, but the department store is bigger.",
+    prompt: "The sports shop is... (big)",
+    fullAnswer: "The sports shop is not as big as the department store."
+  },
+  {
+    imageId: 'trainers 1',
+    source: "These trainers cost £45. Those trainers cost £100.",
+    prompt: "These trainers are... (expensive)",
+    fullAnswer: "These trainers are not as expensive as those."
+  },
+  {
+    imageId: 'greengrocer 1',
+    source: "The greengrocer's fruit is always fresh. The supermarket's fruit is fresh too.",
+    prompt: "The supermarket's fruit is... (fresh)",
+    fullAnswer: "The supermarket's fruit is as fresh as the greengrocer's."
+  },
+  {
+    imageId: 'shoes 1',
+    source: "My new shoes are very comfortable. My old shoes were uncomfortable.",
+    prompt: "My old shoes were... (comfortable)",
+    fullAnswer: "My old shoes were not as comfortable as my new ones."
+  },
+  {
+    imageId: 'bookshop 1',
+    source: "The bookshop is quiet. The clothes shop is noisy.",
+    prompt: "The clothes shop is... (quiet)",
+    fullAnswer: "The clothes shop is not as quiet as the bookshop."
+  },
+  {
+    imageId: 't-shirts 1',
+    source: "This T-shirt is size M. That T-shirt is also size M.",
+    prompt: "This T-shirt is... (big)",
+    fullAnswer: "This T-shirt is as big as that one."
+  }
+];
+
+let currentTask = 0;
+let imgDims = { w: IMG_W, h: IMG_H };
+
+// ============ LOGIC ============
+function preloadImage() {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = 'shops.jpg';
+    img.onload = () => {
+      imgDims = { w: img.naturalWidth, h: img.naturalHeight };
+      resolve();
+    };
+    img.onerror = () => resolve();
+  });
+}
+
+async function init() {
+  await preloadImage();
+  renderTask();
+}
+
+function renderTask() {
+  const task = tasks[currentTask];
+  const shop = shopsData.find(s => s.id === task.imageId);
+
+  document.getElementById('sourceText').textContent = task.source;
+  document.getElementById('promptText').textContent = task.prompt;
+  document.getElementById('flipBackText').textContent = task.fullAnswer;
+  
+  const input = document.getElementById('answerInput');
+  input.value = '';
+  
+  if (isRecording && recognition) {
+    recognition.stop();
+  }
+  
+  document.getElementById('flipCard').classList.remove('flipped');
+
+  const imgEl = document.getElementById('taskImage');
+  if (shop) {
+    requestAnimationFrame(() => {
+      const rect = imgEl.getBoundingClientRect();
+      const cw = rect.width || 400;
+      const ch = rect.height || 300;
+      
+      const scaleX = cw / shop.w;
+      const scaleY = ch / shop.h;
+      const scale = Math.max(scaleX, scaleY);
+
+      const bgW = imgDims.w * scale;
+      const bgH = imgDims.h * scale;
+      const bgX = -(shop.x * scale) + (cw - shop.w * scale) / 2;
+      const bgY = -(shop.y * scale) + (ch - shop.h * scale) / 2;
+
+      imgEl.style.backgroundImage = "url('shops.jpg')";
+      imgEl.style.backgroundSize = `${bgW}px ${bgH}px`;
+      imgEl.style.backgroundPosition = `${bgX}px ${bgY}px`;
+    });
+  }
+
+  document.getElementById('progressBar').style.width = ((currentTask) / (tasks.length - 1)) * 100 + '%';
+  document.getElementById('prevBtn').disabled = (currentTask === 0);
+  document.getElementById('nextBtn').disabled = (currentTask === tasks.length - 1);
+  
+  document.getElementById('hintText').textContent = "Type your answer or click the mic to speak.";
+}
+
+function flipAndSpeak() {
+  const card = document.getElementById('flipCard');
+  card.classList.toggle('flipped');
+  if (card.classList.contains('flipped')) {
+    setTimeout(() => speakPhrase(tasks[currentTask].fullAnswer), 300);
+  }
+}
+
+function showAnswer() {
+  playClickSound();
+  const card = document.getElementById('flipCard');
+  if (!card.classList.contains('flipped')) {
+    card.classList.add('flipped');
+    setTimeout(() => speakPhrase(tasks[currentTask].fullAnswer), 400);
+  }
+  document.getElementById('hintText').textContent = "Compare your answer with the picture.";
+}
+
+function nextTask() {
+  if (currentTask < tasks.length - 1) {
+    currentTask++;
+    renderTask();
+  }
+}
+function prevTask() {
+  if (currentTask > 0) {
+    currentTask--;
+    renderTask();
+  }
+}
+
+window.addEventListener('resize', () => {
+  const imgEl = document.getElementById('taskImage');
+  const shop = shopsData.find(s => s.id === tasks[currentTask].imageId);
+  if (!shop) return;
+  
+  const rect = imgEl.getBoundingClientRect();
+  const cw = rect.width, ch = rect.height;
+  const scale = Math.max(cw / shop.w, ch / shop.h);
+  const bgW = imgDims.w * scale, bgH = imgDims.h * scale;
+  const bgX = -(shop.x * scale) + (cw - shop.w * scale) / 2;
+  const bgY = -(shop.y * scale) + (ch - shop.h * scale) / 2;
+
+  imgEl.style.backgroundSize = `${bgW}px ${bgH}px`;
+  imgEl.style.backgroundPosition = `${bgX}px ${bgY}px`;
+});
+
+init();
+</script>
+</body>
+</html>
